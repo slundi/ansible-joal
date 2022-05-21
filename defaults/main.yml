@@ -27,6 +27,6 @@ joal_path_prefix: joal
 joal_secret_token: "change-me"
 
 #JAVA JVM configuration
-joal_java_xss: 8
-joal_java_xms: 1
-joal_java_xmx: 16
+joal_java_xss: 256k
+joal_java_xms: 32m
+joal_java_xmx: 256m

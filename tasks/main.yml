@@ -7,10 +7,13 @@
       ansible.builtin.service:
         name: joal
         state: stopped
+    - name: Enable service
+      service:
+        name: joal
+        enabled: no
   rescue:
     - name: Get the list of services
       service_facts:
-
     - name: Verify that joal is not installed
       assert:
         that:

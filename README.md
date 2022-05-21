@@ -9,9 +9,9 @@ It installs the default linux JRE package (default-jre-headless).
 | Variable          | Default     | Description |
 |-------------------|:-----------:|-------------|
 | **joal_path**     | `/opt/joal` | Where the program binary should be installed |
-| **joal_java_xss** | 8           | Set the Java thread stack size (in megabytes) |
-| **joal_java_xms** | 1           | Specify the initial Java heap size (in megabytes) |
-| **joal_java_xmx** | 16          | Specify the maximum heap size (in megabytes) |
+| **joal_java_xss** | 64k         | NOT IMPLEMENTED Set the Java thread stack size (number+unit: 64k for 64 KB) |
+| **joal_java_xms** | 32m         | NOT IMPLEMENTED Specify the initial Java heap size (number+unit: 32m for 32 MB) |
+| **joal_java_xmx** | 256m         | NOT IMPLEMENTED Specify the maximum heap size (number+unit: 1g for 1GB) |
 
 ### Data owner
 

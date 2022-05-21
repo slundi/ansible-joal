@@ -3,7 +3,10 @@ Description=Fake torrent ratio
 After=network.target
 
 [Service]
-ExecStart=java -jar -Xss{{ joal_xss }}m -Xms{{ joal_xms }}m -Xmx{{ joal_xmx }}m {{ joal_path }}/joal.jar --joal-conf="{{ joal_config_path }}" --spring.main.web-environment={{ joal_webui }} --server.port={{ joal_port }} --joal.ui.path.prefix="{{ joal_path_prefix }}" --joal.ui.secret-token="{{ joal_secret_token }}"
+User={{ joal_owner }}
+Group={{ joal_owner }}
+#ExecStart=java -jar -Xss{{ joal_java_xss }} -Xms{{ joal_java_xms }} -Xmx{{ joal_java_xmx }} {{ joal_path }}/joal.jar --joal-conf="{{ joal_config_path }}" --spring.main.web-environment={{ joal_webui|lower }} --server.port={{ joal_port }} --joal.ui.path.prefix="{{ joal_path_prefix }}" --joal.ui.secret-token="{{ joal_secret_token }}"
+ExecStart=java -jar {{ joal_path }}/joal.jar --joal-conf="{{ joal_config_path }}" --spring.main.web-environment={{ joal_webui|lower }} --server.port={{ joal_port }} --joal.ui.path.prefix="{{ joal_path_prefix }}" --joal.ui.secret-token="{{ joal_secret_token }}"
 
 [Install]
 WantedBy=multi-user.target
