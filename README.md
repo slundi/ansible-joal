@@ -1,6 +1,6 @@
 # Role Name
 
-Ansible role to install JOAL, a torrent ratio faker, as a Linux service.
+Ansible role to install [JOAL](https://github.com/anthonyraymond/joal), a torrent ratio faker, as a Linux service.
 
 It installs the default linux JRE package (default-jre-headless).
 
@@ -66,3 +66,5 @@ MIT
 ## Author Information
 
 This is my first Ansible role, I tried to follow the best practices while making it.
+
+I was using docker until now but I decided to give it a try to Ansible. I am using an ARM NAS ([Helios4](https://kobol.io/helios4/)) with some docker services it started to crash after some new service installations (not enough memory). OK Docker is good, but I have 4 database servers and some containers are including a web server. So I started to use Ansible to use only 1 database server (PostgreSQL) and one front web server (nginx). It should also help me to find a work.
