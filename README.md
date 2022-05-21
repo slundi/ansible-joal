@@ -1,38 +1,68 @@
-Role Name
-=========
+# Role Name
 
-A brief description of the role goes here.
+Ansible role to install JOAL, a torrent ratio faker, as a Linux service.
 
-Requirements
-------------
+It installs the default linux JRE package (default-jre-headless).
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+## Role Variables
 
-Role Variables
---------------
+| Variable          | Default     | Description |
+|-------------------|:-----------:|-------------|
+| **joal_path**     | `/opt/joal` | Where the program binary should be installed |
+| **joal_java_xss** | 8           | Set the Java thread stack size (in megabytes) |
+| **joal_java_xms** | 1           | Specify the initial Java heap size (in megabytes) |
+| **joal_java_xmx** | 16          | Specify the maximum heap size (in megabytes) |
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+### Data owner
 
-Dependencies
-------------
+| Variable       | Default | Description |
+|----------------|:-------:|-------------|
+| **joal_owner** | root    | Linux user that is the owner of the data |
+| **joal_group** | root    | Linux group of the data |
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+### JOAL seeding configuration
 
-Example Playbook
-----------------
+| Variable       | Default | Description |
+|----------------|:-------:|-------------|
+| **joal_min_upload_rate** | 16    | Minimum upload speed in kbits |
+| **joal_max_upload_rate** | 4096  | Maximum upload speed in kbits |
+| **joal_simultaneous_seed** | 4   | How many torrents should be seeding at the same time |
+| **joal_client** | qbittorrent-4.4.2 | The name of the .client file to use in `joal-conf/clients/` (without the .client extension) |
+| **joal_keep_torrent_with_0_leecher** | true |  should JOAL keep torrent with no leechers or seeders. If yes, torrent with no peers will be seed at 0kB/s. If false torrents will be deleted on 0 peers reached |
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+### JOAL web UI
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+You can enable the web UI and configure it with some variables:
 
-License
--------
+| Variable       | Default | Description |
+|----------------|:-------:|-------------|
+| **joal_config_path** | `/opt/joal` | Path to the joal-conf folder (ie: /home/slundi/joal-conf). It is used when starting the app (`--joal-conf=PATH_TO_CONF` argument) |
+| **joal_webui** | true    | To enable the web context (`--spring.main.web-environment=true` argument) |
+| **joal_port**  | 7041    | The port to be used for both HTTP and WebSocket connection (`--server.port=YOUR_PORT` argument) |
+| **joal_path_prefix** | `joal` | Use your own complicated path here (this will be your first layer of security to keep joal secret). This is security though obscurity, but it is required in our case. This must contains only alphanumeric characters (no slash, backslash, or any other non-alphanum char) (`--joal.ui.path.prefix="SECRET_OBFUSCATION_PATH"` argument) |
+| **joal_secret_token** | `change-me` | Use your own secret token here (this is some kind of a password, choose a complicated one) (`--joal.ui.secret-token="SECRET_TOKEN"` argument) |
 
-BSD
+Once joal is started head to: http://_localhost_:_port_/_SECRET_OBFUSCATION_PATH_/ui/ (obviously, replace SECRET_OBFUSCATION_PATH) by the value you had chosen The **joal_path_prefix** might seems useless but it's actually crucial to set it as complex as possible to prevent peoples to know that joal is running on your server.
 
-Author Information
-------------------
+## Example Playbook
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+```yaml
+- hosts: all
+  gather_facts: true
+  remote_user: root
+  vars:
+    joal_owner: me
+    joal_group: me
+    joal_client: "deluge-1.3.15"
+    joal_config_path: /home/me/joal
+  roles:
+    - joal
+```
+
+## License
+
+MIT
+
+## Author Information
+
+This is my first Ansible role, I tried to follow the best practices while making it.

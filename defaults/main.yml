@@ -26,3 +26,7 @@ joal_path_prefix: joal
 #parameter: --joal.ui.secret-token
 joal_secret_token: "change-me"
 
+#JAVA JVM configuration
+joal_java_xss: 8
+joal_java_xms: 1
+joal_java_xmx: 16

@@ -70,7 +70,7 @@
     mode: "0755"
 
 - name: Moving clients
-  command: "mv {{ joal_path }}/clients {{ joal_config_path }}/clients"
+  command: "mv -n {{ joal_path }}/clients {{ joal_config_path }}/" #move without overwriting (-n), -f to overwrite
 - name: Creating config file
   ansible.builtin.template:
     src: config.json.j2
