@@ -1,0 +1,4 @@
+---
+# handlers file for roles/joal
+- name: reload systemctl
+  command: systemctl daemon-reload

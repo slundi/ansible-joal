@@ -1,0 +1,101 @@
+---
+# tasks file for roles/joal
+
+- name: Stop service joal
+  block:
+    - name: Attempt to stop the service
+      ansible.builtin.service:
+        name: joal
+        state: stopped
+  rescue:
+    - name: Get the list of services
+      service_facts:
+
+    - name: Verify that joal is not installed
+      assert:
+        that:
+          - "'joal.service' not in services"
+
+- name: Install JRE
+  ansible.builtin.apt:
+    name: default-jre-headless
+
+- name: Delete existing temporary directory
+  file:
+    state: absent
+    path: "{{ joal_path }}"
+
+- name: Delete existing archive
+  file:
+    state: absent
+    path: /tmp/joal-latest.tar.gz
+
+- name: Creating joal binary directory
+  file:
+    state: directory
+    path: "{{ joal_path }}"
+
+- name: Getting latest release information
+  uri:
+    url: https://api.github.com/repos/anthonyraymond/joal/releases/latest
+    return_content: true
+    body_format: json
+  register: json_reponse
+
+- name: Download latest release
+  get_url:                                                           
+    url: "{{ json_reponse.json.assets[0].browser_download_url }}"                       
+    dest: /tmp/joal-latest.tar.gz     
+
+#- name: Get joal latest tag
+#  community.general.github_release:
+#    user: anthonyraymond
+#    repo: joal
+#    action: latest_release
+#  register: joal_latest
+
+- name: Extracting archive
+  unarchive:
+    src: /tmp/joal-latest.tar.gz #"https://github.com/gogs/gogs/releases/download/{{ gogs_latest['tag'] }}/gogs_{{ gogs_latest['tag'] | regex_replace('^v','') }}_linux_amd64.zip"
+    dest: "{{ joal_path }}"
+    remote_src: true
+
+- name: Renaming JAR
+  command: "mv {{ joal_path }}/jack-of-all-trades-{{ json_reponse.json.name }}.jar {{ joal_path }}/joal.jar"
+
+- name: Creating user directories
+  file:
+    name: "{{ joal_config_path }}/torrents/archived"
+    state: directory
+    mode: "0755"
+
+- name: Moving clients
+  command: "mv {{ joal_path }}/clients {{ joal_config_path }}/clients"
+- name: Creating config file
+  ansible.builtin.template:
+    src: config.json.j2
+    dest: "{{ joal_config_path }}/config.json"
+- name: Setting permissions
+  ansible.builtin.file:
+    path: "{{ joal_config_path }}"
+    owner: "{{ joal_owner }}"
+    group: "{{ joal_group }}"
+    state: directory
+    recurse: yes
+
+- name: Copying service file
+  ansible.builtin.template:
+    src: joal.service.j2
+    dest: /lib/systemd/system/joal.service
+    mode: 644
+  notify:
+    - reload systemctl
+
+- name: Enable service
+  service:
+    name: joal
+    enabled: yes
+- name: Start service
+  service:
+    name: joal
+    state: started

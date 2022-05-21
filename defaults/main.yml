@@ -1,0 +1,28 @@
+---
+# defaults file for roles/joal
+
+#user data
+joal_owner: root
+joal_group: root
+
+#joal config
+joal_min_upload_rate: 16
+joal_max_upload_rate: 4096
+joal_simultaneous_seed: 4
+joal_client: "qbittorrent-4.4.2"
+joal_keep_torrent_with_0_leecher: true
+
+#joal java args
+joal_path: /opt/joal
+
+#parameter: --joal-conf (path to cong folder)
+joal_config_path: /opt/joal
+#parameter: --spring.main.web-environment
+joal_webui: true
+#parameter: --server.port
+joal_port: 7041
+#parameter: --joal.ui.path.prefix="SECRET_OBFUSCATION_PATH"
+joal_path_prefix: joal
+#parameter: --joal.ui.secret-token
+joal_secret_token: "change-me"
+
