@@ -37,6 +37,8 @@
   file:
     state: directory
     path: "{{ joal_path }}"
+    owner: "{{ joal_owner }}"
+    group: "{{ joal_group }}"
 
 - name: Getting latest release information
   uri:
@@ -61,6 +63,8 @@
   unarchive:
     src: /tmp/joal-latest.tar.gz #"https://github.com/gogs/gogs/releases/download/{{ gogs_latest['tag'] }}/gogs_{{ gogs_latest['tag'] | regex_replace('^v','') }}_linux_amd64.zip"
     dest: "{{ joal_path }}"
+    owner: "{{ joal_owner }}"
+    group: "{{ joal_group }}"
     remote_src: true
 
 - name: Renaming JAR
@@ -70,6 +74,8 @@
   file:
     name: "{{ joal_config_path }}/torrents/archived"
     state: directory
+    owner: "{{ joal_owner }}"
+    group: "{{ joal_group }}"
     mode: "0755"
 
 - name: Moving clients
@@ -90,6 +96,8 @@
   ansible.builtin.template:
     src: joal.service.j2
     dest: /lib/systemd/system/joal.service
+    owner: root
+    group: root
     mode: 644
   notify:
     - reload systemctl
